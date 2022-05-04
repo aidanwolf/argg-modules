@@ -1,37 +1,49 @@
-## Welcome to GitHub Pages
+## ModuleScript Documentation
 
-You can use the [editor on GitHub](https://github.com/aidanwolf/argg-modules/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### modules
+`AnchorToHand[slowParent:number,bothHands:true]`
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+`Anim[(play:string || loop:string || pingpong:string),speed:number,onAnimStart:modulescript,onAnimEnd:modulescript]`
 
-### Markdown
+`ApplyGravity[bounce:number,onGroundHit:modulescript]`
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+`Collidable[]`
 
-```markdown
-Syntax highlighted code block
+`Damage[damage:number,hitRate:number,onDamage:modulescript]`
 
-# Header 1
-## Header 2
-### Header 3
+`Destroy[]`
 
-- Bulleted
-- List
+`Gun[(projectile:uri || rayColor:vector4,rayTexture:uri,rayForce:number),damage:number,semiAuto:bool,shootAnim:string]`
 
-1. Numbered
-2. List
+GameObject
+BARREL
 
-**Bold** and _Italic_ and `Code` text
+`HealthSystem[hp:number,damagedBy:stringList,onHPGain:modulescript,onHpLost:modulescript,onHpZero:modulescript]`
 
-[Link](url) and ![Image](src)
-```
+`Interactive[onTap:modulescript]`
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+`Item[onSpawn:,onEquip:,onDrop:,onCollect:]`
 
-### Jekyll Themes
+`LookAt[target:unique,speed:number]`
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/aidanwolf/argg-modules/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+`Move[(target:unique || position:vector3 || direction:vector3 ),(speed:number || time:number),impulse:bool,onMove:modulescript]`
 
-### Support or Contact
+`NFC[uri:uri,setVar:v,onDetect:modulescript]`
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+`Physical[weight:number,freezeRotation:bool]`
+
+`Scale[scale:number]`
+
+`SetFlag[flag:string]`
+
+`StateMachine[state:number,state1:modulescript,state2:modulescript,...]`
+
+`SetState[to:number]`
+
+`Spawn[uri:uri,position:vector3,rotation:vector4,time:number]`
+
+`Timer[time:number,onTime:modulescript]`
+
+`Trigger[label:string,onTrigger:modulescript]`
+
+`Unique[id:unique]`
