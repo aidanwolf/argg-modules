@@ -1,6 +1,47 @@
 # ModuleScript Documentation
 
-## modules
+## Modules
+[AnchorToHand](#anchortohand)
+
+[Anim](#anim)
+
+[Collidable](#collidable)
+
+[Physical](#physical)
+
+[Damage](#damage)
+
+[Destroy](#destroy)
+
+[Gun](#gun)
+
+[HealthSystem](#healthsystem)
+
+[Interactive](#interactive)
+
+[Item](#item)
+
+[LookAt](#lookat)
+
+[Move](#move)
+
+[NFC](#nfc)
+
+[Scale](#scale)
+
+[StateMachine](#statemachine)
+
+[SetState](#setstate)
+
+[Spawn](#spawn)
+
+[Timer](#timer)
+
+[Trigger](#trigger)
+
+[Unique](#unique)
+
+[Console](#console)
 
 ### AnchorToHand
 `AnchorToHand[slowParent:number,bothHands:true]`
