@@ -54,7 +54,7 @@ Good in combination with `Item[onEquip:]`
 ### Anim
 `Anim[(play:string || loop:string || pingpong:string),speed:number,onAnimStart:modulescript,onAnimEnd:modulescript]`
 
-Play an available animation with play, loop, or pingpong it
+Play an available animation by passing the animation name to play, loop, or pingpong
 
 ### Collidable
 `Collidable[]`
@@ -93,7 +93,7 @@ HealthSystem receives damage from damage dealing objects, by default onHpZero wi
 ### Interactive
 `Interactive[onTap:modulescript]`
 
-HealthSystem receives damage from damage dealing objects
+Makes an object tappable. This module will be upgraded overtime
 
 ### Item
 `Item[onSpawn:,onEquip:,onDrop:,onCollect:,onInspect:]`
