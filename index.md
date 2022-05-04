@@ -1,9 +1,22 @@
 # ModuleScript Documentation
 
 ## Modules
-[AnchorToHand](#anchortohand)
+
+[Item](#item)
+
+[StateMachine](#statemachine)
+
+[SetState](#setstate)
+
+[Gun](#gun)
+
+[HealthSystem](#healthsystem)
 
 [Anim](#anim)
+
+[Unique](#unique)
+
+[AnchorToHand](#anchortohand)
 
 [Collidable](#collidable)
 
@@ -13,13 +26,7 @@
 
 [Destroy](#destroy)
 
-[Gun](#gun)
-
-[HealthSystem](#healthsystem)
-
 [Interactive](#interactive)
-
-[Item](#item)
 
 [LookAt](#lookat)
 
@@ -29,17 +36,11 @@
 
 [Scale](#scale)
 
-[StateMachine](#statemachine)
-
-[SetState](#setstate)
-
 [Spawn](#spawn)
 
 [Timer](#timer)
 
 [Trigger](#trigger)
-
-[Unique](#unique)
 
 [Console](#console)
 
