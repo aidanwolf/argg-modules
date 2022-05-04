@@ -5,18 +5,18 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Shared;
 
-public class PlayAnimation : Module
+public class Anim : Module
 {
     public string onAnimStart { get; set; }
     public string onAnimEnd { get; set; }
-    public string animName { get; set; }
+    public string play { get; set; }
     public float? speed {get; set;}
     public string animMode {get; set;} //Once //Loop //PingPong
 
     Animation anim;
 
     public override void Init () {
-        if (string.IsNullOrEmpty(animName))
+        if (string.IsNullOrEmpty(play))
             return;
 
         base.Init();
@@ -52,7 +52,7 @@ public class PlayAnimation : Module
             clip.AddEvent(animationEndEvent);
         }
 
-        anim.Play(animName);
+        anim.Play(play);
     }
 
     public void AnimationStartHandler (string clipName) {

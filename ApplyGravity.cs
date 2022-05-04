@@ -5,11 +5,22 @@ using UnityEngine;
 public class ApplyGravity : Physical
 {
 
+    public float bounce {get;set;}
+
     public string onGroundHit {get;set;}
 
     public override void Init () {
         base.Init();
         rigidbody.useGravity = true;
+
+        if (bounce > 0) {
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            PhysicMaterial physicsMat = new PhysicMaterial();
+            physicsMat.bounciness = bounce;
+            foreach (Collider collider in colliders) {
+                collider.material = physicsMat;
+            }
+        }
     }
 
     public override void Update () {
@@ -18,6 +29,8 @@ public class ApplyGravity : Physical
 
     public override void Deinit () {
         base.Deinit();
+
+        rigidbody.useGravity = false;
     }
 
     bool groundHit = false;

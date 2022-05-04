@@ -6,7 +6,11 @@ public class Physical : Collidable
 {
     public float? weight {get; set;}
 
+    public bool freezeRotation {get;set;}
+
     public Rigidbody rigidbody;
+
+    public Collider[] colliders;
 
     public override void Init () {
         base.Init();
@@ -16,9 +20,12 @@ public class Physical : Collidable
         rigidbody = Componentizer.DoComponent<Rigidbody>(gameObject,true);
         rigidbody.useGravity = false;
         rigidbody.mass = (float)weight;
+        rigidbody.freezeRotation = freezeRotation;
 
         Componentizer.DoComponent<DragRigidbody>(gameObject,true);
         gameObject.layer = LayerMask.NameToLayer("Interactive");
+
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     public override void SetDefaults () {
@@ -33,6 +40,9 @@ public class Physical : Collidable
 
     public override void Deinit () {
         base.Deinit();
+
+        rigidbody = Componentizer.DoComponent<Rigidbody>(gameObject,false);
+        Componentizer.DoComponent<DragRigidbody>(gameObject,false);
     }
 
 }
