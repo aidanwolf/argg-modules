@@ -65,12 +65,12 @@ Good in combination with `Item[onEquip:]`
 Play an available animation by passing the animation name to play, loop, or pingpong
 
 ### Collidable
-`Collidable[]`
+`Collidable[onHit:modulescript]`
 
 Make object collidable with other objects, react to collision events
 
 ### Physical
-`Physical[weight:number,gravity:bool,freezeRotation:bool]`
+`Physical[weight:number,gravity:bool,freezeRotation:bool,interactive:bool,onGrab:modulescript,onHit:modulescript]`
 
 Make an object react physically, drop with gravity, etc. i.e. rigidbody physics
 
