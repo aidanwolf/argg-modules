@@ -65,9 +65,9 @@ Good in combination with `Item[onEquip:]`
 Play an available animation by passing the animation name to play, loop, or pingpong
 
 ### Collidable
-`Collidable[onHit:modulescript]`
+`Collidable[collider:string,onHit:modulescript]`
 
-Make object collidable with other objects, react to collision events
+Make object collidable with other objects, react to collision events. Setting collider will find the child object of the same name to be collider
 
 ### Physical
 `Physical[weight:number,gravity:bool,freezeRotation:bool,interactive:bool,onGrab:modulescript,onHit:modulescript]`
