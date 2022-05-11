@@ -9,14 +9,51 @@ public class Anim : Module
 {
     public string onAnimStart { get; set; }
     public string onAnimEnd { get; set; }
-    public string play { get; set; }
+    
+    private string _play;
+    public string play {
+        get {
+            return _play;
+        }
+        set {
+            resetAnim();
+            _play = value;
+        }
+    }
+
+    private string _loop;
+    public string loop {
+        get {
+            return _loop;
+        }
+        set {
+            resetAnim();
+            _loop = value;
+        }
+    }
+
+    private string _pingpong;
+    public string pingpong {
+        get {
+            return _pingpong;
+        }
+        set {
+            resetAnim();
+            _pingpong = value;
+        }
+    }
     public float? speed {get; set;}
-    public string animMode {get; set;} //Once //Loop //PingPong
 
     Animation anim;
 
+    private void resetAnim () {
+        play = "";
+        loop = "";
+        pingpong = "";
+    }
+
     public override void Init () {
-        if (string.IsNullOrEmpty(play))
+        if (string.IsNullOrEmpty(play+loop+pingpong))
             return;
 
         base.Init();
@@ -33,7 +70,7 @@ public class Anim : Module
         foreach (AnimationState state in anim)
         {
             state.speed = (float)speed;
-            state.wrapMode = (WrapMode)System.Enum.Parse( typeof(WrapMode), animMode );
+            state.wrapMode = string.IsNullOrEmpty(play)?WrapMode.Once:(string.IsNullOrEmpty(loop)?WrapMode.Loop:WrapMode.PingPong);
         }
 
         if (!string.IsNullOrEmpty(onAnimStart)) {
@@ -52,7 +89,7 @@ public class Anim : Module
             clip.AddEvent(animationEndEvent);
         }
 
-        anim.Play(play);
+        anim.Play(string.IsNullOrEmpty(play)?play:(string.IsNullOrEmpty(loop)?loop:pingpong));
     }
 
     public void AnimationStartHandler (string clipName) {
@@ -70,9 +107,6 @@ public class Anim : Module
 
         if (speed == null)
             speed = 1;
-
-        if (string.IsNullOrEmpty(animMode))
-            animMode = "Once";
     }
 
     public override void Update () {

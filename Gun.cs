@@ -39,7 +39,10 @@ public class Gun : Module
     public Texture2D? rayTexture {get; set;}
     public float damage {get; set;}
     public float rateOfFire {get; set;}
-    public string fireMode {get;set;}
+    public bool semiAuto {get;set;}
+    public string shootAnim {get; set;}
+
+
     private float rayForce {get; set;}
 
     public GameObject triggerButton;
@@ -52,6 +55,8 @@ public class Gun : Module
     private LineRenderer lineRenderer;
 
     private bool shootOnce = false;
+
+    private Anim animModule;
 
     public override void Init () {
         base.Init();
@@ -68,6 +73,11 @@ public class Gun : Module
         if (EFFECT == null) {
             Debug.LogWarning("MISSING EFFECT: Adding line renderer");
             EFFECT = AddLineRenderer();
+        }
+
+        if (!string.IsNullOrEmpty(shootAnim)) {
+            Debug.Log("Has shoot anim, adding Anim module");
+            animModule = Componentizer.DoComponent<Anim>(gameObject,true);
         }
 
         ToggleEffects(false);
@@ -164,12 +174,18 @@ public class Gun : Module
             lineRenderer.SetPosition(1, (hit.point!=Vector3.zero)?hit.point:(fwdWithDist));
         }
 
+        if (animModule) {
+            animModule.play = shootAnim;
+        }
+
     }
 
     public override void Deinit () {
+        if (init) {
+            triggerScript.triggers.Clear();
+            triggerButton.SetActive(false);
+        }
         base.Deinit();
-        triggerScript.triggers.Clear();
-        triggerButton.SetActive(false);
     }
 
     private void startShooting (PointerEventData data) {
@@ -207,6 +223,7 @@ public class Gun : Module
     private void ToggleEffects (bool shooting) {
         if (EFFECT)
             EFFECT.SetActive(shooting);
-        BARREL.SetActive(shooting);
+        if (BARREL)
+            BARREL.SetActive(shooting);
     }
 }

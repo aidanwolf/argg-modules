@@ -217,7 +217,7 @@ public class ModuleParser : MonoBehaviour
         for (var x = 0;x < functions.Count;x++) {
             if (functions[x].param != null) {
                 foreach (var keypair in functions[x].param) {
-                    if (!keypair.Value.Contains("[") && keypair.Value.Contains("/")) {
+                    if (!keypair.Value.Contains("[") && !keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
 
                         if (AssetManager.HasAsset(keypair.Value))
                             continue;
@@ -294,7 +294,7 @@ public class ModuleParser : MonoBehaviour
 
                             prop.SetValue(module, keypair.Value, null);
 
-                        } else if (keypair.Value.Contains("/")) {
+                        } else if (!keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
                             //slash implies asset path
 
                             //load texture

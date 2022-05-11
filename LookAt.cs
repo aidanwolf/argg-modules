@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class LookAt : Module
 {
-    public Transform target { get; set; }
+    public AnchorManager.Anchor target { get; set; }
     public float speed { get; set; }
 
     public override void Init () {
         base.Init();
 
         if (target == null)
-            target = GameObject.Find("LookTarget").transform;
+            target = AnchorManager.GetAnchor("CROSSHAIR"); //a point 1000m out in front of the camera
 
         if (speed == 0)
             speed = 12;

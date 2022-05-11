@@ -11,13 +11,13 @@ public class Collect : Module
     private GameObject mainCanvas;
 
     private ItemInfo itemInfo;
+    private Item itemModule;
 
     public override void Init () {
         base.Init();
 
-        //Show Collect UI
-
-        Debug.Log("Init Init Init");
+        if (itemModule == null)
+            itemModule = Componentizer.DoComponent<Item>(gameObject,true);
 
         if (CollectUI == null) {
 
@@ -27,38 +27,27 @@ public class Collect : Module
             if (mainCanvas == null)
                 mainCanvas = GameObject.Find("Main");
 
-            Debug.Log("show collect ui");
-
             itemInfo = GetComponent<ItemInfo>();
 
             CollectUI = Instantiate(collectUIPrefab,mainCanvas.transform);
             CollectUI.GetComponent<CollectPopUpController>().Init(
                 itemInfo.itemName + " (" + itemInfo.itemAmount + ")",
-                "Owned by " + itemInfo.inventoryId + "\n" + 
-                itemInfo.itemDescription, AddToInventory);
+                "Owned by " + ((itemInfo.inventoryId==DiscordController.playerId)?"You":itemInfo.inventoryId) + "\n" + 
+                itemInfo.itemDescription, ()=>{
+                    itemModule.OnCollectItem();
+                    ActionManager.SendItem(itemInfo.inventoryId,DiscordController.playerId,itemInfo.itemId);
+                    Destroy(gameObject);
+                });
 
         } else {
-
-            Debug.Log("hide collect ui");
-
             Destroy(CollectUI);
             CollectUI = null;
         }
 
     }
-
     public override void Deinit () {
         base.Deinit();
-
-        //Hide Collect UI
-    }
-
-    public void AddToInventory () {
-
-        Debug.Log("COLLECTING, ADD TO INVENTORY!");
-        //transfer
-        ActionManager.SendItem(itemInfo.inventoryId,DiscordController.playerId,itemInfo.itemId);
-        Destroy(gameObject);
-
+        Destroy(CollectUI);
+        CollectUI = null;
     }
 }

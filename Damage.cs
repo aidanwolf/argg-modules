@@ -7,7 +7,7 @@ using System;
 [RequireComponent(typeof(Collidable))]
 public class Damage : Module
 {
-    public int dmg {get;set;}
+    public int damage {get;set;}
 
     public float hitRate {get;set;}
 
@@ -33,7 +33,7 @@ public class Damage : Module
             
             foreach (HealthSystem healthSystem in healthSystems.Values) {
                 if (healthSystem != null)
-                    healthSystem.ReceiveDamage(dmg);
+                    healthSystem.ReceiveDamage(damage);
             }
 
             lastHitTime = Time.time;

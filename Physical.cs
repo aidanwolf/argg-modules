@@ -8,6 +8,8 @@ public class Physical : Collidable
 
     public bool freezeRotation {get;set;}
 
+    public bool gravity {get;set;}
+
     public Rigidbody rigidbody;
 
     public Collider[] colliders;
@@ -18,7 +20,7 @@ public class Physical : Collidable
         SetDefaults();
 
         rigidbody = Componentizer.DoComponent<Rigidbody>(gameObject,true);
-        rigidbody.useGravity = false;
+        rigidbody.useGravity = gravity;
         rigidbody.mass = (float)weight;
         rigidbody.freezeRotation = freezeRotation;
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Move : Module
 {
 
-    //Move[target: || position: || direction:, impuse:, speed: || time:, onMove:]
+    //Move[target: || position: || direction:, impulse:, speed: || time:, onMove:]
     //target
     //position (can be vector3 or anchorName)
     //direction
@@ -152,7 +152,7 @@ public class Move : Module
         target = "";
         position = null;
         direction = "";
-        
+
         Debug.Log("DEINIT MOVE");
     }
 
