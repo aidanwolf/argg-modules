@@ -67,7 +67,7 @@ Play an available animation by passing the animation name to play, loop, or ping
 ### Collidable
 `Collidable[collider:string,onHit:modulescript]`
 
-Make object collidable with other objects, react to collision events. Setting collider will find the child object of the same name to be collider
+Make object collidable with other objects, react to collision events. Setting `collider` will find the child object of the same name to be collider
 
 ### Physical
 `Physical[weight:number,gravity:bool,freezeRotation:bool,interactive:bool,onGrab:modulescript,onHit:modulescript]`
