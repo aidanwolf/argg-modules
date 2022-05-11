@@ -4,6 +4,12 @@
 
 [Item](#item)
 
+[Equip](#equip)
+
+[Drop](#drop)
+
+[Collect](#collect)
+
 [StateMachine](#statemachine)
 
 [SetState](#setstate)
@@ -99,6 +105,21 @@ Makes an object tappable. This module will be upgraded overtime
 `Item[onSpawn:,onEquip:,onDrop:,onCollect:,onInspect:]`
 
 Makes an object into an item which can be equipped, dropped, inspected, or collected into your inventory (behaves similarly to the StateMachine module)
+
+### Equip
+`Equip`
+
+Interacts with Item module to trigger onEquip
+
+### Drop
+`Equip`
+
+Interacts with Item module to trigger onDrop
+
+### Collect
+`Equip`
+
+Instantiates a collect UI and interacts with Item module to trigger onCollect
 
 ### LookAt
 `LookAt[target:unique,speed:number]`
