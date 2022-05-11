@@ -70,7 +70,7 @@ Play an available animation by passing the animation name to play, loop, or ping
 Make object collidable with other objects, react to collision events. Setting `collider` will find the child object of the same name to be collider
 
 ### Physical
-`Physical[weight:number,gravity:bool,freezeRotation:bool,interactive:bool,onGrab:modulescript,onHit:modulescript]`
+`Physical[weight:number,gravity:bool,freezeRotation:bool,interactive:bool,onGrab:modulescript,onHit:modulescript,onHitGround:modulescript]`
 
 Make an object react physically, drop with gravity, etc. i.e. rigidbody physics
 
