@@ -24,6 +24,10 @@ public class Gun : Module
 
     //Gun[rayColor:,rayTexture:,rateOfFire:,Projectile:,Force:,Ammo:]
 
+    public string onShoot {get;set;}
+
+    public string onShootEnd {get;set;}
+
     private ModuleParser.GameObjectWithScript _projectile;
     public ModuleParser.GameObjectWithScript? projectile {
         get { 
@@ -192,6 +196,13 @@ public class Gun : Module
     }
 
     private void startShooting (PointerEventData data) {
+        Debug.Log("startShooting");
+
+        if (!shooting) {
+            if (!string.IsNullOrEmpty(onShoot))
+                ModuleParser.Parse(gameObject, onShoot);
+        }
+
         if (!shootOnce)
         shooting = true;
     }
@@ -200,6 +211,9 @@ public class Gun : Module
         shooting = false;
         shootOnce = false;
         ToggleEffects(false);
+
+        if (!string.IsNullOrEmpty(onShootEnd))
+            ModuleParser.Parse(gameObject, onShootEnd);
     }
 
 
