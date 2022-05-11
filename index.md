@@ -34,6 +34,8 @@
 
 [Interactive](#interactive)
 
+[Dialog](#dialog)
+
 [LookAt](#lookat)
 
 [Move](#move)
@@ -177,3 +179,9 @@ Example: Carrot with `Unique[id:carrot]` can now be pursued by Bunny with `LookA
 `Console[message:string]`
 
 Output something on screen, good for debugging
+
+### Dialog
+`Dialog[message:string]`
+
+Adds a dialog box with message included. Text effects achieved with SuperTextMesh API
+http://supertextmesh.com/docs/SuperTextMesh.html
