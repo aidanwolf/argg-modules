@@ -47,9 +47,9 @@ public class Anim : Module
     Animation anim;
 
     private void resetAnim () {
-        play = "";
-        loop = "";
-        pingpong = "";
+        _play = "";
+        _loop = "";
+        _pingpong = "";
     }
 
     public override void Init () {
@@ -70,7 +70,7 @@ public class Anim : Module
         foreach (AnimationState state in anim)
         {
             state.speed = (float)speed;
-            state.wrapMode = string.IsNullOrEmpty(play)?WrapMode.Once:(string.IsNullOrEmpty(loop)?WrapMode.Loop:WrapMode.PingPong);
+            state.wrapMode = !string.IsNullOrEmpty(play)?WrapMode.Once:(!string.IsNullOrEmpty(loop)?WrapMode.Loop:WrapMode.PingPong);
         }
 
         if (!string.IsNullOrEmpty(onAnimStart)) {
@@ -89,7 +89,7 @@ public class Anim : Module
             clip.AddEvent(animationEndEvent);
         }
 
-        anim.Play(string.IsNullOrEmpty(play)?play:(string.IsNullOrEmpty(loop)?loop:pingpong));
+        anim.Play(!string.IsNullOrEmpty(play)?play:(!string.IsNullOrEmpty(loop)?loop:pingpong));
     }
 
     public void AnimationStartHandler (string clipName) {
