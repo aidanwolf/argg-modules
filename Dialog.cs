@@ -10,6 +10,7 @@ public class Dialog : Module
     private GameObject speechBubble;
 
     private Bounds bounds;
+    
 
     public override void Init() {
         base.Init();
@@ -22,9 +23,13 @@ public class Dialog : Module
 
         bounds = gameObject.getBounds();
 
-        speechBubble.GetComponent<STMDialogueSample>().lines = new string[]{
+        var dialogScript = speechBubble.GetComponent<STMDialogueSample>();
+
+        dialogScript.lines = new string[]{
             message
         };
+
+        dialogScript.Apply();
     }
 
     public override void Update() {
