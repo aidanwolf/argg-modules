@@ -94,12 +94,14 @@ public class Anim : Module
 
     public void AnimationStartHandler (string clipName) {
         Debug.Log("AnimationStartHandler");
-        ModuleParser.Parse(gameObject, onAnimStart);
+        if (!string.IsNullOrEmpty(onAnimStart))
+            ModuleParser.Parse(gameObject, onAnimStart);
     }
 
     public void AnimationCompleteHandler (string clipName) {
         Debug.Log("AnimationCompleteHandler");
-        ModuleParser.Parse(gameObject, onAnimEnd);
+        if (!string.IsNullOrEmpty(onAnimEnd))
+            ModuleParser.Parse(gameObject, onAnimEnd);
     }
 
     public override void SetDefaults () {
