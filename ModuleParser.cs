@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -219,34 +220,49 @@ public class ModuleParser : MonoBehaviour
                 foreach (var keypair in functions[x].param) {
                     if (!keypair.Value.Contains("[") && !keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
 
-                        if (AssetManager.HasAsset(keypair.Value))
-                            continue;
+                        var assetType = keypair.Value.Split("/")[0];
 
-                        assetsToLoad++;
-                        AssetManager.AddAsset(keypair.Value,null);
+                        Debug.Log("assetType = " + assetType);
+                        
+                        // is it an assets/, items/, sfxs/ ?
+                        if (assetType == "assets" || assetType == "items") {
+                            if (AssetManager.HasAsset(keypair.Value))
+                                continue;
 
-                        Debug.Log("keypair.Value = " + keypair.Value);
+                            //we add an empty entry to kick things off
+                            assetsToLoad++;
+                            AssetManager.AddAsset(keypair.Value,null);
 
-                        //to-do:check if object has any of item left in inventory
-                        var inventoryId = gameObject.GetComponent<ItemInfo>()?.itemId;
+                            //to-do: check if object has any of item left in inventory
+                            var inventoryId = gameObject.GetComponent<ItemInfo>()?.itemId;
 
-                        FirebaseManager.Get(keypair.Value,(snapshot)=>{
-                            if (snapshot.Exists) {
-                                ActionManager.instance.SpawnItem(inventoryId, snapshot, (gObj, script) =>{
-                                    AssetManager.AddAsset(keypair.Value,new GameObjectWithScript(gObj,script));
+                            FirebaseManager.Get(keypair.Value,(snapshot)=>{
+                                if (snapshot.Exists) {
+                                    ActionManager.instance.SpawnItem(inventoryId, snapshot, (gObj, script) =>{
+                                        AssetManager.AddAsset(keypair.Value,new GameObjectWithScript(gObj,script));
+                                        assetsToLoad--;
+                                    });
+                                } else {
+        #if UNITY_EDITOR
+                                    var localAsset = GameObject.Find(keypair.Value.Split("/")[1]);
+                                    var localAssetScript = localAsset.GetComponent<TestModuleScript>().ModuleScript;
+                                    AssetManager.AddAsset(keypair.Value,new GameObjectWithScript(localAsset,localAssetScript));
                                     assetsToLoad--;
-                                });
-                            } else {
-    #if UNITY_EDITOR
-                                var localAsset = GameObject.Find(keypair.Value.Split("/")[1]);
-                                var localAssetScript = localAsset.GetComponent<TestModuleScript>().ModuleScript;
-                                AssetManager.AddAsset(keypair.Value,new GameObjectWithScript(localAsset,localAssetScript));
+        #else
+                                    Debug.Log("Module -> load asset failed");
+        #endif
+                                }
+                            });
+                        } else if (assetType == "sfxs") {
+
+                            assetsToLoad++;
+                            SFXManager.LoadSfx(keypair.Value,()=>{
                                 assetsToLoad--;
-    #else
-                                Debug.Log("Module -> load asset failed");
-    #endif
-                            }
-                        });
+                            });
+
+                        } else {
+                            Debug.LogWarning(("Incompatible asset directory " + assetType));
+                        }
                     }
                 }
             }
@@ -297,22 +313,19 @@ public class ModuleParser : MonoBehaviour
 
                         } else if (!keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
                             //slash implies asset path
-
-                            //load texture
-                            //load music
-
-                            prop.SetValue(module, AssetManager.GetAsset(keypair.Value), null);
-
+                            var assetType = keypair.Value.Split("/")[0];
+                            if (assetType == "assets" || assetType == "items") {
+                                prop.SetValue(module, AssetManager.GetAsset(keypair.Value), null);
+                            } else if (assetType == "sfxs") {
+                                prop.SetValue(module, SFXManager.GetSfx(keypair.Value), null);
+                            }
                         } else if (keypair.Value.StartsWith ("(") && keypair.Value.EndsWith (")")) {
                             int freq = keypair.Value.Split(',').Length - 1;
                             if (freq == 1) {
-                                Debug.Log("Vec2()");
                                 prop.SetValue(module, StringToVector2(keypair.Value), null);
                             } else if (freq == 2) {
-                                Debug.Log("Vec3()");
                                 prop.SetValue(module, StringToVector3(keypair.Value), null);
                             } else if (freq == 3) {
-                                Debug.Log("Vec4()");
                                 prop.SetValue(module, StringToVector4(keypair.Value), null);
                             }
                         } else if (isInt(prop) && int.TryParse(keypair.Value, out int intValue)) {
