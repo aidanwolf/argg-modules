@@ -289,6 +289,7 @@ public class ModuleParser : MonoBehaviour
                             continue;
                         }
 
+                        Debug.Log("prop.PropertyType = " + prop.PropertyType);
 
                         if (keypair.Value.Contains("[")) {
 
@@ -314,9 +315,9 @@ public class ModuleParser : MonoBehaviour
                                 Debug.Log("Vec4()");
                                 prop.SetValue(module, StringToVector4(keypair.Value), null);
                             }
-                        } else if (int.TryParse(keypair.Value, out int intValue)) {
+                        } else if (isInt(prop) && int.TryParse(keypair.Value, out int intValue)) {
                            prop.SetValue(module, intValue, null);
-                        } else if (float.TryParse(keypair.Value, out float floatValue)) {
+                        } else if (isFloat(prop) && float.TryParse(keypair.Value, out float floatValue)) {
                            prop.SetValue(module, floatValue, null);
                         } else if (bool.TryParse(keypair.Value, out bool boolValue)) {
                            prop.SetValue(module, boolValue, null);
@@ -342,5 +343,13 @@ public class ModuleParser : MonoBehaviour
         // }
 
         yield return null;
+    }
+
+    private bool isInt (PropertyInfo prop) {
+        return prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?);
+    }
+
+    private bool isFloat (PropertyInfo prop) {
+        return prop.PropertyType == typeof(float) || prop.PropertyType == typeof(float?);
     }
 }
