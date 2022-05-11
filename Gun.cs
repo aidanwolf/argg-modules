@@ -113,6 +113,9 @@ public class Gun : Module
         //if init = false, don't continue
         base.Update();
 
+        if (!init)
+            return;
+
         ToggleEffects(shooting);
 
         Vector3 muzzlePos = BARREL.transform.position;
