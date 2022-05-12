@@ -16,11 +16,11 @@ public class Physical : Collidable
 
     public Rigidbody rigidbody;
 
-    public Collider[] colliders;
-
     public string onGrab {get;set;}
 
     public string onHitGround {get;set;}
+
+    private bool hitGround;
 
     public override void Init () {
         base.Init();
@@ -40,8 +40,6 @@ public class Physical : Collidable
             });
             gameObject.layer = LayerMask.NameToLayer("Interactive");
         }
-
-        colliders = GetComponentsInChildren<Collider>();
 
         if (bounce > 0) {
             rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -78,7 +76,8 @@ public class Physical : Collidable
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Mesh")) {
+        if (!hitGround && collision.gameObject.layer == LayerMask.NameToLayer("Mesh")) {
+            hitGround = true;
             Debug.Log("hit ground! " + gameObject.name);
             if (!string.IsNullOrEmpty(onHitGround))
                 ModuleParser.Parse(gameObject, onHitGround);
@@ -87,7 +86,7 @@ public class Physical : Collidable
 
     private void OnCollisionExit(Collision collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Mesh")) {
-            
+            hitGround = false;
         }
     }
 }
