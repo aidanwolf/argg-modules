@@ -5,7 +5,7 @@ using UnityEngine;
 public class Scale : Module
 {
 
-    public float scale { get; set; }
+    public float size { get; set; }
 
     private Vector3 orgScale;
 
@@ -19,15 +19,15 @@ public class Scale : Module
 
         SetDefaults();
 
-        transform.localScale = orgScale*scale;
+        transform.localScale = orgScale*size;
 
     }
 
     public override void SetDefaults()
     {
         base.SetDefaults();
-        if (scale == 0) {
-            scale = 1f;
+        if (size == 0) {
+            size = 1f;
         }
     }
 }
