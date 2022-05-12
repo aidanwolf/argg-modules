@@ -89,6 +89,7 @@ public class Anim : Module
             clip.AddEvent(animationEndEvent);
         }
 
+        anim.Rewind();
         anim.Play(!string.IsNullOrEmpty(play)?play:(!string.IsNullOrEmpty(loop)?loop:pingpong));
     }
 
