@@ -20,7 +20,6 @@ public class Gun : Module
     //rateOfFire=constant (opt:number in ms)
     //ammo=none/unlimited (opt:ammo itemId)
     //fireMode=auto (opt:semiauto)
-    //sfx=none (opt: soundId)
 
     //Gun[rayColor:,rayTexture:,rateOfFire:,Projectile:,Force:,Ammo:]
 
@@ -44,8 +43,6 @@ public class Gun : Module
     public float damage {get; set;}
     public float rateOfFire {get; set;}
     public bool semiAuto {get;set;}
-    public string shootAnim {get; set;}
-
 
     private float rayForce {get; set;}
 
@@ -61,6 +58,7 @@ public class Gun : Module
     private bool shootOnce = false;
 
     private Anim animModule;
+    private float lastFireTime = 0;
 
     public override void Init () {
         base.Init();
@@ -77,11 +75,6 @@ public class Gun : Module
         if (EFFECT == null) {
             Debug.LogWarning("MISSING EFFECT: Adding line renderer");
             EFFECT = AddLineRenderer();
-        }
-
-        if (!string.IsNullOrEmpty(shootAnim)) {
-            Debug.Log("Has shoot anim, adding Anim module");
-            animModule = Componentizer.DoComponent<Anim>(gameObject,true);
         }
 
         ToggleEffects(false);
@@ -111,6 +104,9 @@ public class Gun : Module
 
         if (damage == 0)
             damage = 1;
+
+        if (rateOfFire == 0)
+            rateOfFire = 0.1f;
     }
 
     public override void Update () {
@@ -130,65 +126,78 @@ public class Gun : Module
         if (!shooting)
             return;
 
-        if (projectile != null) {
-
+        if (Time.time-lastFireTime <= rateOfFire) {
             if (lineRenderer) {
                 lineRenderer.positionCount = 0;
             }
-
-            GameObject projectileCopy = Instantiate(projectile.gObj);
-            projectileCopy.transform.position = BARREL.transform.position;
-            projectileCopy.transform.rotation = BARREL.transform.rotation;
-            projectileCopy.SetActive(true);
-
-            ModuleParser.Parse(projectileCopy, projectile.script);
-
-            shooting = false;
-            shootOnce = true;
             return;
         }
 
-        Debug.DrawRay(muzzlePos, fwdWithDist, Color.yellow);
+        if (projectile != null) {
 
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(BARREL.transform.position, fwd, out hit, 5000f)) {
-            Debug.Log("Did Hit");
+            lastFireTime = Time.time;
 
-            Module[] modules;
+            GameObject projectileCopy = Instantiate(projectile.gObj);
+            projectileCopy.transform.position = BARREL.transform.position + BARREL.transform.forward*projectileCopy.getBounds().extents.z;
+            projectileCopy.transform.rotation = BARREL.transform.rotation;
+            projectileCopy.SetActive(true);
 
-            if (hit.rigidbody) {
-                hit.rigidbody.AddForceAtPosition (fwd * rayForce, hit.point);
-                modules = hit.rigidbody.gameObject.GetComponents<Module>();
-            } else {
-                modules = hit.collider.transform.GetRootParent().gameObject.GetComponents<Module>();
+            //projectiles are limited to 10s of life
+            Destroy(projectileCopy,10f);
+
+            ModuleParser.Parse(projectileCopy, projectile.script);
+
+            if (semiAuto) {
+                shooting = false;
+                shootOnce = true;
             }
 
-            foreach (Module module in modules) {
-                var moduleName = module.GetType().Name;
-                Debug.Log(moduleName);
-                Type type = Type.GetType(moduleName);
-                var prop = type.GetMethod("ReceiveDamage");
-                if (prop != null) {
-                    Debug.Log(moduleName + " has function ReceiveDamage");
-                    prop.Invoke(module, new object[] {damage});
+            if (!string.IsNullOrEmpty(onShoot))
+                ModuleParser.Parse(gameObject, onShoot);
+
+        } else {
+
+            Debug.DrawRay(muzzlePos, fwdWithDist, Color.yellow);
+
+            // Does the ray intersect any objects excluding the player layer
+            if (Physics.Raycast(BARREL.transform.position, fwd, out hit, 5000f)) {
+                Debug.Log("Did Hit");
+
+                Module[] modules;
+
+                if (hit.rigidbody) {
+                    hit.rigidbody.AddForceAtPosition (fwd * rayForce, hit.point);
+                    modules = hit.rigidbody.gameObject.GetComponents<Module>();
+                } else {
+                    modules = hit.collider.transform.GetRootParent().gameObject.GetComponents<Module>();
+                }
+
+                foreach (Module module in modules) {
+                    var moduleName = module.GetType().Name;
+                    Debug.Log(moduleName);
+                    Type type = Type.GetType(moduleName);
+                    var prop = type.GetMethod("ReceiveDamage");
+                    if (prop != null) {
+                        Debug.Log(moduleName + " has function ReceiveDamage");
+                        prop.Invoke(module, new object[] {damage});
+                    }
                 }
             }
+
+            if (lineRenderer) {
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, BARREL.transform.position);
+                lineRenderer.SetPosition(1, (hit.point!=Vector3.zero)?hit.point:(fwdWithDist));
+            }
         }
 
-        if (lineRenderer) {
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, BARREL.transform.position);
-            lineRenderer.SetPosition(1, (hit.point!=Vector3.zero)?hit.point:(fwdWithDist));
-        }
-
-        if (animModule) {
-            animModule.play = shootAnim;
-        }
-
+        if (!string.IsNullOrEmpty(onShoot))
+            ModuleParser.Parse(gameObject, onShoot);
     }
 
     public override void Deinit () {
         if (init) {
+            Debug.Log("GUN DEINIT!");
             triggerScript.triggers.Clear();
             triggerButton.SetActive(false);
         }
@@ -197,11 +206,6 @@ public class Gun : Module
 
     private void startShooting (PointerEventData data) {
         Debug.Log("startShooting");
-
-        if (!shooting) {
-            if (!string.IsNullOrEmpty(onShoot))
-                ModuleParser.Parse(gameObject, onShoot);
-        }
 
         if (!shootOnce)
         shooting = true;
@@ -240,7 +244,5 @@ public class Gun : Module
     private void ToggleEffects (bool shooting) {
         if (EFFECT)
             EFFECT.SetActive(shooting);
-        if (BARREL)
-            BARREL.SetActive(shooting);
     }
 }
