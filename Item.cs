@@ -32,7 +32,10 @@ public class Item : Module
         //Note: this may not be the correct default behavior for an Item
         transform.position = Camera.main.transform.position+Camera.main.transform.forward;
 
-        SwitchState(0);
+        //SwitchState(0);
+
+        if (!string.IsNullOrEmpty(onSpawn))
+            ModuleParser.Parse(gameObject, onSpawn);
     }
 
     public override void SetDefaults() {
@@ -73,6 +76,8 @@ public class Item : Module
     }
 
     public void OnEquipItem () {
-        SwitchState(3);
+        //SwitchState(3);
+        if (!string.IsNullOrEmpty(onEquip))
+            ModuleParser.Parse(gameObject, onEquip);
     }
 }
