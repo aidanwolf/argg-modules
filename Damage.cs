@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(Collidable))]
+[RequireComponent(typeof(Rigidbody))]
 public class Damage : Module
 {
     public int damage {get;set;}
@@ -13,15 +14,42 @@ public class Damage : Module
 
     public string onDamage {get;set;}
 
-    public Dictionary<string,HealthSystem> healthSystems;
+    public Dictionary<string,Module[]> damagableObjects;
+
+    private Collidable collidable;
 
     public override void Init()
     {
+
+        collidable = Componentizer.DoComponent<Collidable>(gameObject,true);
+        collidable.Init();
+
         base.Init();
 
-        healthSystems = new Dictionary<string,HealthSystem>();
+        damagableObjects = new Dictionary<string,Module[]>();
 
         SetDefaults();
+    }
+
+    public override void SetDefaults() {
+        base.SetDefaults();
+        if (hitRate == 0)
+            hitRate = 0.1f;
+
+        //if we don't have a rigidbody we make our colliders triggers
+
+        var physical = gameObject.GetComponent<Physical>();
+
+        if (physical == null || !physical.init) {
+            Debug.Log("Physical module none or off");
+            var rigidbody = GetComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
+        }
+    }
+
+    public override void Deinit() {
+        base.Deinit();
+        collidable.Deinit();
     }
 
     float lastHitTime = 0f;
@@ -29,36 +57,54 @@ public class Damage : Module
     public override void Update()
     {
         base.Update();
-        if (Time.time-lastHitTime >= hitRate) {    
-            
-            foreach (HealthSystem healthSystem in healthSystems.Values) {
-                if (healthSystem != null)
-                    healthSystem.ReceiveDamage(damage);
-            }
 
-            lastHitTime = Time.time;
-            if (!string.IsNullOrEmpty(onDamage))
-                ModuleParser.Parse(gameObject,onDamage);
+        if (Time.time-lastHitTime < hitRate)
+            return;
+
+        if (damagableObjects == null || damagableObjects.Count == 0)
+            return;
+        
+        foreach (Module[] modules in damagableObjects.Values) {
+            foreach (Module module in modules) {
+                var moduleName = module.GetType().Name;
+                Type type = Type.GetType(moduleName);
+                var prop = type.GetMethod("ReceiveDamage");
+                if (module != null && prop != null) {
+                    Debug.Log(moduleName + " has function ReceiveDamage");
+                    prop.Invoke(module, new object[] {damage});
+                }
+            }
         }
+
+        lastHitTime = Time.time;
+        if (!string.IsNullOrEmpty(onDamage))
+            ModuleParser.Parse(gameObject,onDamage);
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
+
+        Debug.Log(gameObject.name + " Damage OnCollisionEnter!!!");
         if (!init)
             return;
 
-        if (!healthSystems.ContainsKey(collision.collider.name))
-            healthSystems.Add(collision.collider.name,collision.collider.transform.GetRootParent().gameObject.GetComponent<HealthSystem>());
+        Module[] modules = collision.collider.transform.GetRootParent().gameObject.GetComponents<Module>();
+
+        if (!damagableObjects.ContainsKey(collision.collider.name)) {
+            damagableObjects.Add(collision.collider.name,modules);
+        } else {
+            damagableObjects[collision.collider.name] = modules;
+        }
     }
 
-    void OnCollisionExit(Collision collision) {
+    private void OnCollisionExit(Collision collision) {
          if (!init)
             return;  
 
-        if (healthSystems.ContainsKey(collision.collider.name))
-            healthSystems.Remove(collision.collider.name);
+        if (damagableObjects.ContainsKey(collision.collider.name))
+            damagableObjects.Remove(collision.collider.name);
 
-        if (healthSystems.Count == 0)
+        if (damagableObjects.Count == 0)
             lastHitTime = 0;
     }
 }
