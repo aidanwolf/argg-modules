@@ -209,7 +209,7 @@ public class ModuleParser : MonoBehaviour
             }
         }
 
-        Debug.Log("function # " + functions.Count);
+        //Debug.Log("function # " + functions.Count);
 
         List<Component> modules = new List<Component>();
 
@@ -220,17 +220,23 @@ public class ModuleParser : MonoBehaviour
                 foreach (var keypair in functions[x].param) {
                     if (!keypair.Value.Contains("[") && !keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
 
+                        assetsToLoad++;
                         var assetType = keypair.Value.Split("/")[0];
 
-                        Debug.Log("assetType = " + assetType);
-                        
                         // is it an assets/, items/, sfxs/ ?
                         if (assetType == "assets" || assetType == "items") {
-                            if (AssetManager.HasAsset(keypair.Value))
+                            if (AssetManager.HasAsset(keypair.Value)) {
+                                assetsToLoad--;
                                 continue;
+                            } else if (AssetManager.HasKey(keypair.Value)) {
+                                yield return new WaitUntil(()=> AssetManager.HasAsset(keypair.Value));
+                                assetsToLoad--;
+                                continue;
+                            }
+
+                            Debug.Log("asset needed " + keypair.Value);
 
                             //we add an empty entry to kick things off
-                            assetsToLoad++;
                             AssetManager.AddAsset(keypair.Value,null);
 
                             //to-do: check if object has any of item left in inventory
@@ -244,6 +250,8 @@ public class ModuleParser : MonoBehaviour
                                     });
                                 } else {
         #if UNITY_EDITOR
+                            
+                                    Debug.Log("get local asset = " + keypair.Value.Split("/")[1]);
                                     var localAsset = GameObject.Find(keypair.Value.Split("/")[1]);
                                     var localAssetScript = localAsset.GetComponent<TestModuleScript>().ModuleScript;
                                     AssetManager.AddAsset(keypair.Value,new GameObjectWithScript(localAsset,localAssetScript));
@@ -254,21 +262,26 @@ public class ModuleParser : MonoBehaviour
                                 }
                             });
                         } else if (assetType == "sfxs") {
-
-                            assetsToLoad++;
                             SFXManager.LoadSfx(keypair.Value,()=>{
                                 assetsToLoad--;
                             });
 
                         } else {
                             Debug.LogWarning(("Incompatible asset directory " + assetType));
+                            assetsToLoad--;
                         }
                     }
                 }
             }
         }
 
-        yield return new WaitUntil(()=> assetsToLoad==0);
+        Debug.Log("assetsToLoad = " + assetsToLoad);
+
+        while (assetsToLoad > 0) {
+            yield return null;
+        }
+
+        Debug.Log(gameObject.name + " is ready to be parsed");
 
         //1. add functions and split parameters into strings
         for (var i = 0; i < functions.Count;i++) {
@@ -296,7 +309,7 @@ public class ModuleParser : MonoBehaviour
                 if (param != null) {
                     foreach (KeyValuePair<string,string> keypair in param) {
 
-                        Debug.Log("Attempting to set property " + keypair.Key + " to " + keypair.Value);
+                        //Debug.Log("Attempting to set property " + keypair.Key + " to " + keypair.Value);
 
                         var prop = type.GetProperty(keypair.Key);
 
@@ -305,14 +318,9 @@ public class ModuleParser : MonoBehaviour
                             continue;
                         }
 
-                        Debug.Log("prop.PropertyType = " + prop.PropertyType);
-
                         if (keypair.Value.Contains("[")) {
-
                             prop.SetValue(module, keypair.Value, null);
-
                         } else if (!keypair.Value.Contains("<") && keypair.Value.Contains("/")) {
-                            //slash implies asset path
                             var assetType = keypair.Value.Split("/")[0];
                             if (assetType == "assets" || assetType == "items") {
                                 prop.SetValue(module, AssetManager.GetAsset(keypair.Value), null);
