@@ -30,7 +30,7 @@ public class HealthSystem : Collidable
 
     public void ReceiveDamage (float damage) {
         hp -= damage;
-        Debug.Log("Received Damage! " + damage + "\nhp is now: " + hp);
+        //Debug.Log("Received Damage! " + damage + "\nhp is now: " + hp);
 
         if (hp <= 0 && !string.IsNullOrEmpty(onHpZero)) {
             ModuleParser.Parse(gameObject, onHpZero);
