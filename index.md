@@ -52,6 +52,26 @@
 
 [Console](#console)
 
+### Position Shortcuts
+
+Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
+
+PLAYER `position:PLAYER+(0,0,1)`
+
+HAND_ANCHOR `position:HAND_ANCHOR`
+
+WALL_IN_VIEW `coming soon`
+
+GROUND_IN_VIEW `coming soon`
+
+CEILING_IN_VIEW `coming soon`
+
+NEAREST_WALL `coming soon`
+
+NEAREST_FLOOR `coming soon`
+
+PLAYER_VIEW `coming soon`
+
 ### AnchorToHand
 `AnchorToHand[slowParent:number,bothHands:true]`
 
