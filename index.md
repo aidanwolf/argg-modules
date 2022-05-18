@@ -95,7 +95,7 @@ Make object collidable with other objects, react to collision events. Setting `c
 Make an object react physically, drop with gravity, etc. i.e. rigidbody physics
 
 ### Damage
-`Damage[damage:number,hitRate:number,onDamage:modulescript]`
+`Damage[damage:number,hitForce:number,hitRate:number,onDamage:modulescript]`
 
 Make an object cause damage to other items
 
