@@ -3,11 +3,16 @@
 ## ModuleScript 101
 
 - Modules can be nested within other modules `Module[onAction:Module2[onAction:Module3]]`
+
 - Same modules cannot execute side-by-side:
   - ❌ `SetVar[variable:var1,value:true],SetVar[variable:var2,value:false]`
   - ✅ `SetVar[variable:var1,value:true,onVar:SetVar[variable:var2,value:false]]`
+
 - Modules can be turned on or off by modules like [StateMachine](#statemachine)
+
 - If no script is included, the default Inventory item behavior is `Item[onSpawn:Physical]`
+
+_- Think of ModuleScript like a long strand of DNA that decides how an object behaves_
 
 ## Modules
 
@@ -67,31 +72,35 @@
 
 [IfElse](#ifelse)
 
-### Position Shortcuts
+### Position 101
 
 Spawn in world space `position:(0,0,0)` or `position:(0,0,0)`
 
 Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
 
-PLAYER `position:PLAYER+(0,0,1)`
+Create a new position `position:PLAYER+(0,1,0)`
 
-HAND_ANCHOR `position:HAND_ANCHOR`
+### Position Shortcuts
 
-PLAYER_VIEW `position:PLAYER_VIEW` spawns 1M in front of player (this will change)
+**PLAYER** - position of player's device `position:PLAYER+(0,0,1)`
 
-WALL_IN_VIEW `coming soon`
+**HAND_ANCHOR** - hand position `position:HAND_ANCHOR`
 
-GROUND_IN_VIEW `coming soon`
+**PLAYER_VIEW** - 1M in front of player's device (this will change `position:PLAYER_VIEW`
 
-CEILING_IN_VIEW `coming soon`
+_WALL_IN_VIEW - coming soon_
 
-NEAREST_WALL `coming soon`
+_GROUND_IN_VIEW - coming soon_
 
-NEAREST_FLOOR `coming soon`
+_CEILING_IN_VIEW - coming soon_
 
-NEAREST_GRASS `coming soon`
+_NEAREST_WALL - coming soon_
 
-COFFEE_MAKER `coming soon`
+_NEAREST_FLOOR - coming soon_
+
+_NEAREST_GRASS - coming soon_
+
+_COFFEE_MAKER - coming soon_
 
 ### SetVar
 `SetVar[variable:string,value:(number || string),onVar:modulescript]`
