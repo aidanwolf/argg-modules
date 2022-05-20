@@ -98,9 +98,11 @@ Use `#` as in `variable:#string` to set a persistent variable on the item (serve
 
 Gets the value of a variable and passes it on to `onVar`
 
-Pass variable data thru onVar by including `v` anywhere in `onVar:modulescript` (example:`onVar:Console[message:my variable equals v]`)
+Pass variable data thru onVar by including `v` anywhere in `onVar:modulescript` (example:`onVar:Console[message:var equals v]`)
 
 Use `always:true` to make the module check for consistent updates, otherwise it will only check once
+
+Note: Make sure to include the proper prefix `!` or `#` when interacting with server-side variables
 
 ### IfElse
 `IfElse[variable:string,equals:||gt:||gte:||lt:||lte:||modulo:,always:bool,onTrue:modulescript,onFalse:modulescript]`
@@ -118,6 +120,10 @@ Pass variable data thru onTrue and onFalse by including `v` (example:`onTrue:Con
 `lte:(number or variable)` less than or equal to
 
 `modulo:(number or variable)` leaves 0 remainder (same as 16 % 4 = 0)
+
+Use `always:true` to make the module check for consistent updates, otherwise it will only check once
+
+Note: Make sure to include the proper prefix `!` or `#` when interacting with server-side variables
 
 ### AnchorToHand
 `AnchorToHand[slowParent:number,bothHands:true]`
