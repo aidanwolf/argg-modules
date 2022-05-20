@@ -3,9 +3,9 @@
 ## ModuleScript 101
 
 - Modules can be nested within other modules `Module[onAction:Module2[onAction:Module3]]`
-- Same modules cannot execute side-by-side, instead nest them 
-  ❌ `SetVar[variable:var1,value:true],SetVar[variable:var2,value:false]`
-  ✅ `SetVar[variable:var1,value:true,onVar:SetVar[variable:var2,value:false]]`
+- Same modules cannot execute side-by-side:
+  - ❌ `SetVar[variable:var1,value:true],SetVar[variable:var2,value:false]`
+  - ✅ `SetVar[variable:var1,value:true,onVar:SetVar[variable:var2,value:false]]`
 - Modules can be turned on or off by modules like [StateMachine](#statemachine)
 - If no script is included, the default Inventory item behavior is `Item[onSpawn:Physical]`
 
@@ -70,6 +70,7 @@
 ### Position Shortcuts
 
 Spawn in world space `position:(0,0,0)` or `position:(0,0,0)`
+
 Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
 
 PLAYER `position:PLAYER+(0,0,1)`
@@ -88,31 +89,46 @@ NEAREST_WALL `coming soon`
 
 NEAREST_FLOOR `coming soon`
 
+NEAREST_GRASS `coming soon`
+
+COFFEE_MAKER `coming soon`
+
 ### SetVar
 `SetVar[variable:string,value:(number || string),onVar:modulescript]`
 
 Set a variable such as `highscore`
+
 Use no prefix as in `variable:string` to set a temporary global variable (client-side)
+
 Use `!` as in `variable:!string` to add a persistent variable to the player (server-side)
+
 Use `#` as in `variable:#string` to set a persistent variable on the item (server-side)
 
 ### GetVar
 `GetVar[variable:string,always:bool,onVar:modulescript]`
 
 Gets the value of a variable and passes it on to `onVar`
+
 Pass variable data thru onVar by including `v` anywhere in `onVar:modulescript` (example:`onVar:Console[message:my variable equals v]`)
+
 Use `always:true` to make the module check for consistent updates, otherwise it will only check once
 
 ### IfElse
-`IfElse[variable:string,equals:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
-`IfElse[variable:string,gt:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
-`IfElse[variable:string,gte:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
-`IfElse[variable:string,lt:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
-`IfElse[variable:string,lte:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
-`IfElse[variable:string,modulo:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,equals:||gt:||gte:||lt:||lte:||modulo:,always:bool,onTrue:modulescript,onFalse:modulescript]`
 
 Checks if condition is met and passes through to `onTrue` and `onFalse`
+
 Pass variable data thru onTrue and onFalse by including `v` (example:`onTrue:Console[message:v is correct!],onFalse:Console[message:v is wrong!]`)
+
+`gt:(number or variable)` greater than
+
+`gte:(number or variable)` greater than or equal to
+
+`lt:(number or variable)` less than
+
+`lte:(number or variable)` less than or equal to
+
+`modulo:(number or variable)` leaves 0 remainder (same as 16 % 4 = 0)
 
 ### AnchorToHand
 `AnchorToHand[slowParent:number,bothHands:true]`
