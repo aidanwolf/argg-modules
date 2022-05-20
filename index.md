@@ -1,5 +1,14 @@
 # ModuleScript Documentation
 
+## ModuleScript 101
+
+- Modules can be nested within other modules `Module[onAction:Module2[onAction:Module3]]`
+- Same modules cannot execute side-by-side, instead nest them 
+  ❌ `SetVar[variable:var1,value:true],SetVar[variable:var2,value:false]`
+  ✅ `SetVar[variable:var1,value:true,onVar:SetVar[variable:var2,value:false]]`
+- Modules can be turned on or off by modules like [StateMachine](#statemachine)
+- If no script is included, the default Inventory item behavior is `Item[onSpawn:Physical]`
+
 ## Modules
 
 [Item](#item)
@@ -52,13 +61,22 @@
 
 [Console](#console)
 
+[SetVar](#setvar)
+
+[GetVar](#getvar)
+
+[IfElse](#ifelse)
+
 ### Position Shortcuts
 
+Spawn in world space `position:(0,0,0)` or `position:(0,0,0)`
 Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
 
 PLAYER `position:PLAYER+(0,0,1)`
 
 HAND_ANCHOR `position:HAND_ANCHOR`
+
+PLAYER_VIEW `position:PLAYER_VIEW` spawns 1M in front of player (this will change)
 
 WALL_IN_VIEW `coming soon`
 
@@ -70,7 +88,31 @@ NEAREST_WALL `coming soon`
 
 NEAREST_FLOOR `coming soon`
 
-PLAYER_VIEW `coming soon`
+### SetVar
+`SetVar[variable:string,value:(number || string),onVar:modulescript]`
+
+Set a variable such as `highscore`
+Use no prefix as in `variable:string` to set a temporary global variable (client-side)
+Use `!` as in `variable:!string` to add a persistent variable to the player (server-side)
+Use `#` as in `variable:#string` to set a persistent variable on the item (server-side)
+
+### GetVar
+`GetVar[variable:string,always:bool,onVar:modulescript]`
+
+Gets the value of a variable and passes it on to `onVar`
+Pass variable data thru onVar by including `v` anywhere in `onVar:modulescript` (example:`onVar:Console[message:my variable equals v]`)
+Use `always:true` to make the module check for consistent updates, otherwise it will only check once
+
+### IfElse
+`IfElse[variable:string,equals:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,gt:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,gte:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,lt:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,lte:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+`IfElse[variable:string,modulo:(number || string),always:bool,onTrue:modulescript,onFalse:modulescript]`
+
+Checks if condition is met and passes through to `onTrue` and `onFalse`
+Pass variable data thru onTrue and onFalse by including `v` (example:`onTrue:Console[message:v is correct!],onFalse:Console[message:v is wrong!]`)
 
 ### AnchorToHand
 `AnchorToHand[slowParent:number,bothHands:true]`
@@ -164,12 +206,12 @@ Make an object read an NFC and pass a variable `v` to all `v` instances in `onDe
 Set the scale of an object
 
 ### StateMachine
-`StateMachine[state:number,state1:modulescript,state2:modulescript,...]`
+`StateMachine[state:(number or variable),state1:modulescript,state2:modulescript,...]`
 
 Enable an object to hold multiple states (ex: enemy would have idle, patrol, follow, attack, defend, and death state)
 
 ### SetState
-`SetState[to:number]`
+`SetState[to:(number || variable)]`
 
 Set the state from within a StateMachine
 
