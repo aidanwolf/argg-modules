@@ -12,7 +12,15 @@
 
 - If no script is included, the default Inventory item behavior is `Item[onSpawn:Physical]`
 
-_- Think of ModuleScript like a long strand of DNA that decides how an object behaves_
+- _Think of ModuleScript like a long strand of DNA that decides how an object behaves_
+
+## Directory
+
+[Modules](#modules)
+
+[Variables](#variables-101)
+
+[Position](#position-101)
 
 ## Modules
 
@@ -50,6 +58,8 @@ _- Think of ModuleScript like a long strand of DNA that decides how an object be
 
 [Dialog](#dialog)
 
+[Broadcast](#broadcast)
+
 [LookAt](#lookat)
 
 [Move](#move)
@@ -71,36 +81,6 @@ _- Think of ModuleScript like a long strand of DNA that decides how an object be
 [GetVar](#getvar)
 
 [IfElse](#ifelse)
-
-### Position 101
-
-Spawn in world space `position:(0,0,0)` or `position:(0,0,0)`
-
-Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
-
-Create a new position `position:PLAYER+(0,1,0)`
-
-### Position Shortcuts
-
-**PLAYER** - position of player's device `position:PLAYER+(0,0,1)`
-
-**HAND_ANCHOR** - hand position `position:HAND_ANCHOR`
-
-**PLAYER_VIEW** - 1M in front of player's device (this will change `position:PLAYER_VIEW`
-
-_WALL_IN_VIEW - coming soon_
-
-_GROUND_IN_VIEW - coming soon_
-
-_CEILING_IN_VIEW - coming soon_
-
-_NEAREST_WALL - coming soon_
-
-_NEAREST_FLOOR - coming soon_
-
-_NEAREST_GRASS - coming soon_
-
-_COFFEE_MAKER - coming soon_
 
 ### SetVar
 `SetVar[variable:string,value:(number || string),onVar:modulescript]`
@@ -266,9 +246,60 @@ Example: Carrot with `Unique[id:carrot]` can now be pursued by Bunny with `LookA
 `Console[message:string]`
 
 Output something on screen, good for debugging
+You can use `<>` tags to display variables
+
+### Broadcast
+`Broadcast[message:string,tts:bool]`
+
+Sends a message to the ARGG Discord server (currently to the #🐤-activity channel)
+
+You can use `<>` tags to display variables
 
 ### Dialog
 `Dialog[message:string]`
 
 Adds a dialog box with message included. Text effects achieved with SuperTextMesh API
 http://supertextmesh.com/docs/SuperTextMesh.html
+
+You can use `<>` tags to display variables
+
+## Variables 101
+
+There will be a growing list of variables that developers can use to add deep functionality to their objects and games
+
+**PLAYER_ID** - returns Discord user id
+
+**PLAYER_TAG** - returns <@user id> (useful for tagging a user on Discord) `Broadcast[message<PLAYER_TAG> did a thing!`]
+
+**GG** - coming soon
+
+## Position 101
+
+Spawn in world space `position:(0,0,0)` or `position:(0,0,0)`
+
+Spawn in local space `position:+(0,0,0)` or `position:-(0,0,0)`
+
+Create a new position `position:PLAYER+(0,1,0)`
+
+### Position Shortcuts
+
+**PLAYER** - position of player's device `position:PLAYER+(0,0,1)`
+
+**HAND_ANCHOR** - hand position `position:HAND_ANCHOR`
+
+**PLAYER_VIEW** - 1M in front of player's device (this will change `position:PLAYER_VIEW`
+
+_WALL_IN_VIEW - coming soon_
+
+_GROUND_IN_VIEW - coming soon_
+
+_CEILING_IN_VIEW - coming soon_
+
+_NEAREST_WALL - coming soon_
+
+_NEAREST_FLOOR - coming soon_
+
+_NEAREST_GRASS - coming soon_
+
+_COFFEE_MAKER - coming soon_
+
